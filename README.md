@@ -64,7 +64,7 @@ bash scripts/download_models.sh
 **(Optional) For fast integer program solving in the semi-online setting:** 
 
 Get your [gurobi](https://www.gurobi.com/) licence which is free for academic use. 
-If a licence is not found, we fall back to using [PuLP](https://github.com/coin-or/pulp) which is slower and is not rigorously tested by us. All experiments are conducted with gurobi.
+If a license is not found, we fall back to using [PuLP](https://github.com/coin-or/pulp) which is slower and is not rigorously tested by us. All experiments are conducted with gurobi.
 
 **(Optional) For text-prompted/automatic demo:**
 
