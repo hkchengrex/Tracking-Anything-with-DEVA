@@ -31,12 +31,12 @@ Here are some of the useful argument options that are shared for all the evaluat
 python evaluation/eval_vos.py --dataset [dataset] --output [output directory] 
 ```
 
-- Possible options for [dataset]: `D16` (DAVIS 2016), `D17` (DAVIS 2017), `Y18` (YouTubeVOS-2018), `Y19` (YouTubeVOS-2019) and `G` (Generic dataset, see below).
+- Possible options for [dataset]: `D16` (DAVIS 2016), `D17` (DAVIS 2017), `Y18` (YouTubeVOS-2018), `Y19` (YouTubeVOS-2019), and `G` (Generic dataset, see below).
 - Specify `--split test` to test on the DAVIS 2017 test-dev set.
 - For generic dataset, additionally specify `--generic_path`. It should point to a directory that contains `JPEGImages` and `Annotations`. In each of those folders, there should be directories of the same name as the video names. Each of those directories should contain the images or annotations for the video. 
-- By default, we only use the first-frame annotation in the generic mode. Specify `--use_all_masks` to incorpate new objects (as in the YouTubeVOS dataset).
+- By default, we only use the first-frame annotation in the generic mode. Specify `--use_all_masks` to incorporate new objects (as in the YouTubeVOS dataset).
 
-To get quantitiative results:
+To get quantitative results:
 - DAVIS 2017 validation: [davis2017-evaluation](https://github.com/davisvideochallenge/davis2017-evaluation) or [vos-benchmark](https://github.com/hkchengrex/vos-benchmark).
 - DAVIS 2016 validation: [vos-benchmark](https://github.com/hkchengrex/vos-benchmark).
 - DAVIS 2017 test-dev: [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/6812)
