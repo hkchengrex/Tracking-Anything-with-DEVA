@@ -108,6 +108,13 @@ You can always look at `deva/inference/eval_args.py` and `deva/ext/ext_eval_args
 2. [Running DEVA with detections to reproduce the benchmark results.](docs/EVALUATION.md)
 3. [Training the DEVA model.](docs/TRAINING.md)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://imgur.com/aouI1WU.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://imgur.com/aCbrA9S.png">
+  <img alt="separator" src="https://imgur.com/aCbrA9S.png">
+</picture>
+
+
 ## Citation
 
 ```bibtex
