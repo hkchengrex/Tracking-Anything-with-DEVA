@@ -19,6 +19,23 @@ We show that this decoupled formulation compares favorably to end-to-end approac
 
 ## Demo Videos
 
+### Demo with Grounded Segment Anything (text prompt: "pig"):
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/57c5235d-f385-49d6-a342-98f7952cbc9b
+
+Source: https://youtu.be/FbK3SL97zf8
+
+### Demo with Segment Anything (automatic points-in-grid prompting); original video following annotations:
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/25ecfb37-47e2-4157-bb3d-b52193a53529
+
+Source: DAVIS 2017 validation set "soapbox"
+
+### Demo with Segment Anything on a out-of-domain example; original video following annotations:
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/af0c7d58-4212-4ef2-b692-61263312e409
+
+Source: https://youtu.be/FQQaSyH9hZI
 
 ## Installation
 
