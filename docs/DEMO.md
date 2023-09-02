@@ -6,9 +6,19 @@ Explanation of arguments:
 - `SAM_NUM_POINTS_PER_BATCH`: number of points prompts to process in parallel in SAM
 - `SAM_PRED_IOU_THRESHOLD`: threshold of predicted IoU to be considered as a valid segmentation for SAM
 - `SAM_OVERLAP_THRESHOLD`: if suppress_small_objects are enabled, this is the IoU threshold for the suppression. A lower threshold means more segmentation masks (less suppression).
-- `amp`: use mixed precision; is faster and have a lower memory usage
+- `amp`: enable mixed precision; is faster and has a lower memory usage
 - `chunk_size`: number of objects to be processed in parallel; a higher number means faster inference but higher memory usage
 - `size`: internal processing resolution; defaults to 480
 - `max_missed_detection_count`: maximum number of consecutive detections that can be missed before an object is deleted from memory
 - `max_num_objects`: maximum number of objects that can be tracked at the same time; new objects are ignored if this is exceeded
-- `suppress_small_objects`: if enabled, small objects that overlaps with large objects are suppressed during the automatic mode; does not matter in the text-prompted mode
+- `suppress_small_objects`: if enabled, small objects that overlap with large objects are suppressed during the automatic mode; does not matter in the text-prompted mode
+
+
+Source videos used in our demo:
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/4cb4df71-d5a7-4fa0-871a-afe3b574f9fc
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/4fd2f471-7553-4598-88af-93d2859199bf
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/c8c1384a-7f61-40e3-a7d2-6864b0ba085f
+
