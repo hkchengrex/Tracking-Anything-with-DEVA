@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "isthing": false,
+        "category_id": 7
+    },
+    {
+        "id": 2,
+        "isthing": true,
+        "category_id": 63
+    },
+    {
+        "id": 3,
+        "isthing": false,
+        "category_id": 66
+    },
+    {
+        "id": 4,
+        "isthing": true,
+        "category_id": 60
+    },
+    {
+        "id": 5,
+        "isthing": false,
+        "category_id": 14
+    },
+    {
+        "id": 6,
+        "isthing": true,
+        "category_id": 63
+    },
+    {
+        "id": 7,
+        "isthing": true,
+        "category_id": 60
+    }
+]
