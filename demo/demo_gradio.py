@@ -54,6 +54,7 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
     writer_initizied = False
 
     cap = cv2.VideoCapture(video)
+    fps = cap.get(cv2.CAP_PROP_FPS)
     ti = 0
     # only an estimate
     with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
@@ -65,7 +66,7 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
                     vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
                     os.makedirs(vid_folder, exist_ok=True)
                     vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
-                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), 24, (w, h))
+                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     writer_initizied = True
                     result_saver.writer = writer
 
@@ -125,6 +126,7 @@ def demo_automatic(video: gr.Video, threshold: float, points_per_side: int, max_
     writer_initizied = False
 
     cap = cv2.VideoCapture(video)
+    fps = cap.get(cv2.CAP_PROP_FPS)
     ti = 0
     # only an estimate
     with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
@@ -136,7 +138,7 @@ def demo_automatic(video: gr.Video, threshold: float, points_per_side: int, max_
                     vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
                     os.makedirs(vid_folder, exist_ok=True)
                     vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
-                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), 24, (w, h))
+                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     writer_initizied = True
                     result_saver.writer = writer
 

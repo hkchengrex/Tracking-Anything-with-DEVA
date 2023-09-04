@@ -81,6 +81,8 @@ Then visit the link that popped up on the terminal. If executing on a remote ser
 We have prepared an example in `example/vipseg/12_1mWNahzcsAc` (a clip from the VIPSeg dataset).
 The following two scripts segment the example clip using either Grounded Segment Anything with text prompts or SAM with automatic (points in grid) prompting.
 
+(The method runs faster with scripts than with gradio.)
+
 **Script (text-prompted):**
 ```bash
 python demo/demo_with_text.py --chunk_size 4 \
