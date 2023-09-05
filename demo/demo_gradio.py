@@ -58,32 +58,33 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
     fps = cap.get(cv2.CAP_PROP_FPS)
     ti = 0
     # only an estimate
-    with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
-        while (cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == True:
-                if not writer_initizied:
-                    h, w = frame.shape[:2]
-                    vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
-                    os.makedirs(vid_folder, exist_ok=True)
-                    vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
-                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                    writer_initizied = True
-                    result_saver.writer = writer
+    with torch.cuda.amp.autocast(enabled=cfg['amp']):
+        with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if ret == True:
+                    if not writer_initizied:
+                        h, w = frame.shape[:2]
+                        vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
+                        os.makedirs(vid_folder, exist_ok=True)
+                        vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
+                        writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                        writer_initizied = True
+                        result_saver.writer = writer
 
-                with torch.cuda.amp.autocast(enabled=cfg['amp']):
+
                     process_frame_text(deva,
-                                       gd_model,
-                                       sam_model,
-                                       'null.png',
-                                       result_saver,
-                                       ti,
-                                       image_np=frame)
-                ti += 1
-                pbar.update(1)
-            else:
-                break
-    flush_buffer(deva, result_saver)
+                                        gd_model,
+                                        sam_model,
+                                        'null.png',
+                                        result_saver,
+                                        ti,
+                                        image_np=frame)
+                    ti += 1
+                    pbar.update(1)
+                else:
+                    break
+        flush_buffer(deva, result_saver)
     writer.release()
     cap.release()
     deva.clear_buffer()
@@ -130,31 +131,32 @@ def demo_automatic(video: gr.Video, threshold: float, points_per_side: int, max_
     fps = cap.get(cv2.CAP_PROP_FPS)
     ti = 0
     # only an estimate
-    with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
-        while (cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == True:
-                if not writer_initizied:
-                    h, w = frame.shape[:2]
-                    vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
-                    os.makedirs(vid_folder, exist_ok=True)
-                    vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
-                    writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                    writer_initizied = True
-                    result_saver.writer = writer
+    with torch.cuda.amp.autocast(enabled=cfg['amp']):
+        with tqdm(total=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))) as pbar:
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if ret == True:
+                    if not writer_initizied:
+                        h, w = frame.shape[:2]
+                        vid_folder = path.join(tempfile.gettempdir(), 'gradio-deva')
+                        os.makedirs(vid_folder, exist_ok=True)
+                        vid_path = path.join(vid_folder, f'{hash(os.times())}.mp4')
+                        writer = cv2.VideoWriter(vid_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                        writer_initizied = True
+                        result_saver.writer = writer
 
-                with torch.cuda.amp.autocast(enabled=cfg['amp']):
+                    
                     process_frame_auto(deva,
-                                       sam_model,
-                                       'null.png',
-                                       result_saver,
-                                       ti,
-                                       image_np=frame)
-                ti += 1
-                pbar.update(1)
-            else:
-                break
-    flush_buffer(deva, result_saver)
+                                        sam_model,
+                                        'null.png',
+                                        result_saver,
+                                        ti,
+                                        image_np=frame)
+                    ti += 1
+                    pbar.update(1)
+                else:
+                    break
+        flush_buffer(deva, result_saver)
     writer.release()
     cap.release()
     deva.clear_buffer()
@@ -204,7 +206,7 @@ text_demo_tab = gr.Interface(
         gr.Dropdown(choices=['semionline', 'online'],
                     label='Temporal setting (semionline is slower but less noisy)',
                     value='semionline'),
-        gr.Checkbox(label='Pluralize nouns (increases recall)', default=True),
+        gr.Checkbox(label='Pluralize nouns (increases recall)', value=True),
     ],
     outputs="playable_video",
     examples=[
@@ -246,7 +248,21 @@ text_demo_tab = gr.Interface(
                   'original',
                   'semionline',
                   True,
-              ]],
+              ],
+              [
+                  'https://user-images.githubusercontent.com/7107196/265596169-c556d398-44dd-423b-9ff3-49763eaecd94.mp4',
+                  'capybara',
+                  0.35,
+                  200,
+                  480,
+                  5,
+                  5,
+                  8,
+                  'original',
+                  'semionline',
+                  True,
+              ],
+              ],
     cache_examples=False,
     title='DEVA: Tracking Anything with Decoupled Video Segmentation (text-prompted)')
 
@@ -290,7 +306,7 @@ auto_demo_tab = gr.Interface(
         gr.Dropdown(choices=['semionline', 'online'],
                     label='Temporal setting (semionline is slower but less noisy)',
                     value='semionline'),
-        gr.Checkbox(label='Suppress small masks', default=False),
+        gr.Checkbox(label='Suppress small masks', value=False),
     ],
     outputs="playable_video",
     examples=[[
