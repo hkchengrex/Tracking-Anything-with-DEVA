@@ -11,7 +11,7 @@ def add_ext_eval_args(parser: ArgumentParser):
     parser.add_argument('--GROUNDING_DINO_CHECKPOINT_PATH',
                         default='./saves/groundingdino_swint_ogc.pth')
 
-    parser.add_argument('--DINO_THRESHOLD', default=0.5, type=float)
+    parser.add_argument('--DINO_THRESHOLD', default=0.35, type=float)
     parser.add_argument('--DINO_NMS_THRESHOLD', default=0.8, type=float)
 
     # Segment Anything (SAM) models
@@ -63,6 +63,7 @@ def add_text_default_args(parser):
                         help='Max. num of objects to keep in memory. -1 for no limit')
     parser.add_argument('--prompt', type=str, help='Separate classes with a single fullstop')
     parser.add_argument('--sam_variant', default='original', help='mobile/original')
+    parser.add_argument('--do_not_pluralize', action='store_true')
     return parser
 
 

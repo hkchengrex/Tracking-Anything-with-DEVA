@@ -22,7 +22,7 @@ from deva.ext.with_text_processor import process_frame_with_text as process_fram
 
 def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects: int,
                    internal_resolution: int, detection_every: int, max_missed_detection: int,
-                   chunk_size: int, sam_variant: str, temporal_setting: str):
+                   chunk_size: int, sam_variant: str, temporal_setting: str, pluralize: bool):
     np.random.seed(42)
     torch.autograd.set_grad_enabled(False)
     parser = ArgumentParser()
@@ -41,6 +41,7 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
     cfg['max_missed_detection_count'] = max_missed_detection
     cfg['sam_variant'] = sam_variant
     cfg['temporal_setting'] = temporal_setting
+    cfg['pluralize'] = pluralize
     gd_model, sam_model = get_grounding_dino_model(cfg, 'cuda')
 
     deva = DEVAInferenceCore(deva_model, config=cfg)
@@ -165,7 +166,7 @@ text_demo_tab = gr.Interface(
     inputs=[
         gr.Video(),
         gr.Text(label='Prompt (class names delimited by full stops)'),
-        gr.Slider(minimum=0.01, maximum=0.99, value=0.5, label='Threshold'),
+        gr.Slider(minimum=0.01, maximum=0.99, value=0.35, label='Threshold'),
         gr.Slider(
             minimum=10,
             maximum=1000,
@@ -203,13 +204,14 @@ text_demo_tab = gr.Interface(
         gr.Dropdown(choices=['semionline', 'online'],
                     label='Temporal setting (semionline is slower but less noisy)',
                     value='semionline'),
+        gr.Checkbox(label='Pluralize nouns (increases recall)', default=True),
     ],
     outputs="playable_video",
     examples=[
               [
                   'https://user-images.githubusercontent.com/7107196/265518886-e5f6df87-9fd0-4178-8490-00c4b8dc613b.mp4',
                   'person.hat.horse',
-                  0.5,
+                  0.35,
                   200,
                   480,
                   5,
@@ -217,11 +219,12 @@ text_demo_tab = gr.Interface(
                   8,
                   'original',
                   'semionline',
+                  True,
               ],
               [
                   'https://user-images.githubusercontent.com/7107196/265518760-72e7495c-d5f9-4a8b-b7e8-8714b269e98d.mp4',
                   'person.tree',
-                  0.5,
+                  0.35,
                   200,
                   480,
                   5,
@@ -229,6 +232,7 @@ text_demo_tab = gr.Interface(
                   8,
                   'original',
                   'semionline',
+                  True,
               ],
               [
                   'https://user-images.githubusercontent.com/7107196/265518746-4a00cd0d-f712-447f-82c4-6152addffd6b.mp4',
@@ -241,6 +245,7 @@ text_demo_tab = gr.Interface(
                   8,
                   'original',
                   'semionline',
+                  True,
               ]],
     cache_examples=False,
     title='DEVA: Tracking Anything with Decoupled Video Segmentation (text-prompted)')

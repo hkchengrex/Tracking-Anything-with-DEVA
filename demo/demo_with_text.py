@@ -36,6 +36,7 @@ if __name__ == '__main__':
     """
     cfg['temporal_setting'] = args.temporal_setting.lower()
     assert cfg['temporal_setting'] in ['semionline', 'online']
+    cfg['pluralize'] = not args.do_not_pluralize
 
     # get data
     frames = sorted(os.listdir(cfg['img_path']))
