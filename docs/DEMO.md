@@ -19,6 +19,8 @@ Source videos used in our demo:
 
 https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/4a00cd0d-f712-447f-82c4-6152addffd6b
 
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/c556d398-44dd-423b-9ff3-49763eaecd94
+
 https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/72e7495c-d5f9-4a8b-b7e8-8714b269e98d
 
 https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/337dd073-07eb-4392-9610-c5f6c6b94832
