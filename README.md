@@ -10,6 +10,10 @@ ICCV 2023
 
 [[arXiV (coming soon)]]() [[PDF]](https://drive.google.com/file/d/1lAgg-j8d6EH1XYUz9htDaZDh4pxuIslb) [[Project Page]](https://hkchengrex.github.io/Tracking-Anything-with-DEVA/)
 
+## Highlights
+1. Provide long-term, open-vocabulary video segmentation with text-prompts out-of-the-box.
+2. Fairly easy to **integrate your own image model**! Wouldn't you or your reviewers be interested in seeing examples where your image model also works well on videos :smirk:? No finetuning is needed!
+
 ## Abstract
 
 We develop a decoupled video segmentation approach (**DEVA**), composed of task-specific image-level segmentation and class/task-agnostic bi-directional temporal propagation.
