@@ -25,9 +25,15 @@ We show that this decoupled formulation compares favorably to end-to-end approac
 
 ### Demo with Grounded Segment Anything (text prompt: "pig"):
 
-https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/922bef92-5aa4-48d0-a8f2-01b7c8993d6c
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/9a6dbcd1-2c84-45c8-ac0a-4ad31169881f
 
 Source: https://youtu.be/FbK3SL97zf8
+
+### Demo with Grounded Segment Anything (text prompt: "capybara"):
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/2ac5acc2-d160-49be-a013-68ad1d4074c5
+
+Source: https://youtu.be/couz1CrlTdQ
 
 ### Demo with Segment Anything (automatic points-in-grid prompting); original video follows DEVA result overlaying the video:
 
