@@ -8,7 +8,7 @@ University of Illinois Urbana-Champaign and Adobe
 
 ICCV 2023
 
-[[arXiV (coming soon)]]() [[PDF]](https://drive.google.com/file/d/1lAgg-j8d6EH1XYUz9htDaZDh4pxuIslb) [[Project Page]](https://hkchengrex.github.io/Tracking-Anything-with-DEVA/)
+[[arXiV (coming soon)]]() [[PDF]](https://drive.google.com/file/d/1lAgg-j8d6EH1XYUz9htDaZDh4pxuIslb) [[Project Page]](https://hkchengrex.github.io/Tracking-Anything-with-DEVA/) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1OsyNVoV_7ETD1zIE8UWxL3NXxu12m_YZ?usp=sharing)
 
 ## Highlights
 1. Provide long-term, open-vocabulary video segmentation with text-prompts out-of-the-box.
