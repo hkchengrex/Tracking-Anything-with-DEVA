@@ -144,7 +144,6 @@ class KeyValueMemoryStore:
 
         if end == 0:
             # to accommodate the case where end = -ve 0
-            print('Happened! bruh')
             end = bucket_num_elements
         assert end < 0
 

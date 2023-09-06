@@ -183,8 +183,8 @@ class MemoryManager:
             self.H, self.W = value.shape[-2:]
             self.HW = self.H * self.W
             # convert from num. frames to num. tokens
-            self.max_work_tokens = self.max_mem_frames * self.HW
             if self.use_long_term:
+                self.max_work_tokens = self.max_mem_frames * self.HW
                 self.min_work_tokens = self.min_mem_frames * self.HW
 
         # key:   C*N
