@@ -8,7 +8,11 @@ import torch
 import torch.nn.functional as F
 import torchvision
 
-from groundingdino.util.inference import Model as GroundingDINOModel
+try:
+    from groundingdino.util.inference import Model as GroundingDINOModel
+except ImportError:
+    # not sure why this happens somethimes
+    from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
 from segment_anything import sam_model_registry, SamPredictor
 from deva.ext.MobileSAM.setup_mobile_sam import setup_model as setup_mobile_sam
 import numpy as np

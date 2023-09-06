@@ -12,7 +12,11 @@ from deva.inference.frame_utils import FrameInfo
 from deva.inference.result_utils import ResultSaver
 from deva.inference.demo_utils import get_input_frame_for_deva
 from deva.ext.grounding_dino import segment_with_text
-from groundingdino.util.inference import Model as GroundingDINOModel
+try:
+    from groundingdino.util.inference import Model as GroundingDINOModel
+except ImportError:
+    # not sure why this happens somethimes
+    from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
 from segment_anything import SamPredictor
 
 
