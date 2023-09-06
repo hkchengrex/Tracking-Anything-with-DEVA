@@ -82,6 +82,9 @@ Install [our fork of Grounded-Segment-Anything](https://github.com/hkchengrex/Gr
 
 ## Quick Start
 
+[DEMO.md](docs/DEMO.md) contains more details on the input arguments and tips on speeding up inference.
+You can always look at `deva/inference/eval_args.py` and `deva/ext/ext_eval_args.py` for a full list of arguments.
+
 **With gradio:**
 ```bash
 python demo/demo_gradio.py
@@ -90,8 +93,6 @@ Then visit the link that popped up on the terminal. If executing on a remote ser
 
 We have prepared an example in `example/vipseg/12_1mWNahzcsAc` (a clip from the VIPSeg dataset).
 The following two scripts segment the example clip using either Grounded Segment Anything with text prompts or SAM with automatic (points in grid) prompting.
-
-(The method runs faster with scripts than with gradio.)
 
 **Script (text-prompted):**
 ```bash
@@ -110,9 +111,6 @@ python demo/demo_automatic.py --chunk_size 4 \
 --size 480 \
 --output ./example/output
 ```
-
-[DEMO.md](docs/DEMO.md) contains more details on the arguments.
-You can always look at `deva/inference/eval_args.py` and `deva/ext/ext_eval_args.py` for a full list of arguments.
 
 ## Training and Evaluation
 
