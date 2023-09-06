@@ -44,6 +44,8 @@ To get quantitative results:
 - YouTubeVOS 2019 validation: [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/6066)
 
 
+*Known issue: We note that DEVA video object segmentation does not perform as well as XMem for very long videos after further testing. This characterized by a much higher false positive rate when the target object is out-of-view. This might be a consequence of "stable data augmentation" which means the target object is in-view most of the time.during training.*
+
 ## Open-World/Large-Vocabulary/Unsupervised Video Object Segmentation
 
 **VIPSeg:**
