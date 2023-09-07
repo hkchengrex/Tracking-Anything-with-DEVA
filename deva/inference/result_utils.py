@@ -135,7 +135,7 @@ class ResultArgs:
 
 def save_result(queue :Queue):
     while True:
-        args = queue.get()
+        args: ResultArgs = queue.get()
         if args is None:
             queue.task_done()
             break
