@@ -63,6 +63,7 @@ if __name__ == '__main__':
         for ti, (frame, im_path) in enumerate(tqdm(loader)):
             process_frame(deva, sam_model, im_path, result_saver, ti, image_np=frame)
         flush_buffer(deva, result_saver)
+    result_saver.end()
 
     # save this as a video-level json
     with open(path.join(out_path, 'pred.json'), 'w') as f:

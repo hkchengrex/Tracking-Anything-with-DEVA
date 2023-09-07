@@ -301,6 +301,7 @@ for vid_reader in pbar:
                 else:
                     raise NotImplementedError
 
+        result_saver.end()
         if is_vipseg:
             # save this for a dataset-level json
             output_json_annotations.append(result_saver.video_json)

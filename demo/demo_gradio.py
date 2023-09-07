@@ -85,6 +85,7 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
                 else:
                     break
         flush_buffer(deva, result_saver)
+    result_saver.end()
     writer.release()
     cap.release()
     deva.clear_buffer()
@@ -157,6 +158,7 @@ def demo_automatic(video: gr.Video, threshold: float, points_per_side: int, max_
                 else:
                     break
         flush_buffer(deva, result_saver)
+    result_saver.end()
     writer.release()
     cap.release()
     deva.clear_buffer()

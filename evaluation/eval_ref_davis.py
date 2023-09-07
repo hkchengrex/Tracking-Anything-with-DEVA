@@ -148,6 +148,7 @@ for vid_name in pbar:
 
                     result_saver.save_mask(prob, frame, need_resize=need_resize, shape=shape)
 
+            result_saver.end()
         with open(path.join(out_path, vid_name, 'key.txt'), 'w') as f:
             f.write(f'options: {time_indices}; keyframe: {keyframe_ti}')
 

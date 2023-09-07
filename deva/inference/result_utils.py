@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 import torch
 import torch.nn.functional as F
 import torchvision
@@ -6,12 +6,17 @@ import os
 from os import path
 from PIL import Image, ImagePalette
 import pycocotools.mask as mask_util
+from threading import Thread
+from queue import Queue
+from dataclasses import dataclass
+import copy
 
 import numpy as np
 import supervision as sv
 
 from deva.utils.pano_utils import ID2RGBConverter
 from deva.inference.object_manager import ObjectManager
+from deva.inference.object_info import ObjectInfo
 
 
 class ResultSaver:
@@ -75,6 +80,10 @@ class ResultSaver:
         if self.need_remapping:
             self.id2rgb_converter = ID2RGBConverter()
 
+        self.queue = Queue(maxsize=10)
+        self.thread = Thread(target=save_result, args=(self.queue, ))
+        self.thread.start()
+
     def save_mask(self,
                   prob: torch.Tensor,
                   frame_name: str,
@@ -84,6 +93,67 @@ class ResultSaver:
                   image_np: np.ndarray = None,
                   prompts: List[str] = None,
                   path_to_image: str = None):
+        
+        args = ResultArgs(
+            saver=self,
+            prob=prob,
+            frame_name=frame_name,
+            need_resize=need_resize,
+            shape=shape,
+            save_the_mask=save_the_mask,
+            image_np=image_np,
+            prompts=prompts,
+            path_to_image=path_to_image,
+            tmp_id_to_obj=copy.deepcopy(self.object_manager.tmp_id_to_obj),
+            obj_to_tmp_id=copy.deepcopy(self.object_manager.obj_to_tmp_id),
+            segments_info=copy.deepcopy(self.object_manager.get_current_segments_info()),
+        )
+
+        self.queue.put(args)
+
+    def end(self):
+        self.queue.put(None)
+        self.queue.join()
+        self.thread.join()
+
+
+@dataclass
+class ResultArgs:
+    saver: ResultSaver
+    prob: torch.Tensor
+    frame_name: str
+    need_resize: bool
+    shape: Optional[Tuple[int, int]]
+    save_the_mask: bool
+    image_np: np.ndarray
+    prompts: List[str]
+    path_to_image: str
+    tmp_id_to_obj: Dict[int, ObjectInfo]
+    obj_to_tmp_id: Dict[ObjectInfo, int]
+    segments_info: List[Dict]
+
+def save_result(queue):
+    while True:
+        args = queue.get()
+
+        if args is None:
+            queue.task_done()
+            break
+
+        saver = args.saver
+        prob = args.prob
+        frame_name = args.frame_name
+        need_resize = args.need_resize
+        shape = args.shape
+        save_the_mask = args.save_the_mask
+        image_np = args.image_np
+        prompts = args.prompts
+        path_to_image = args.path_to_image
+        tmp_id_to_obj = args.tmp_id_to_obj
+        obj_to_tmp_id = args.obj_to_tmp_id
+        segments_info = args.segments_info
+        all_obj_ids = [k.id for k in obj_to_tmp_id]
+
         if need_resize:
             prob = F.interpolate(prob.unsqueeze(1), shape, mode='bilinear', align_corners=False)[:,
                                                                                                  0]
@@ -92,32 +162,34 @@ class ResultSaver:
         mask = torch.argmax(prob, dim=0)
 
         # remap indices
-        if self.need_remapping:
-            mask = self.object_manager.tmp_to_obj_cls(mask)
+        if saver.need_remapping:
+            new_mask = torch.zeros_like(mask)
+            for tmp_id, obj in tmp_id_to_obj.items():
+                new_mask[mask == tmp_id] = obj.id
+            mask = new_mask
 
         # record output in the json file
-        all_segments_info = self.object_manager.get_current_segments_info()
-        if self.json_style == 'vipseg':
-            for seg in all_segments_info:
+        if saver.json_style == 'vipseg':
+            for seg in segments_info:
                 area = int((mask == seg['id']).sum())
                 seg['area'] = area
             # filter out zero-area segments
-            all_segments_info = [s for s in all_segments_info if s['area'] > 0]
+            segments_info = [s for s in segments_info if s['area'] > 0]
             # append to video level storage
             this_annotation = {
                 'file_name': frame_name[:-4] + '.jpg',
-                'segments_info': all_segments_info,
+                'segments_info': segments_info,
             }
-            self.all_annotations.append(this_annotation)
-        elif self.json_style == 'burst':
-            for seg in all_segments_info:
+            saver.all_annotations.append(this_annotation)
+        elif saver.json_style == 'burst':
+            for seg in segments_info:
                 seg['mask'] = mask == seg['id']
                 seg['area'] = int(seg['mask'].sum())
                 coco_mask = mask_util.encode(np.asfortranarray(seg['mask'].cpu().numpy()))
                 coco_mask['counts'] = coco_mask['counts'].decode('utf-8')
                 seg['rle_mask'] = coco_mask
             # filter out zero-area segments
-            all_segments_info = [s for s in all_segments_info if s['area'] > 0]
+            segments_info = [s for s in segments_info if s['area'] > 0]
             # append to video level storage
             this_annotation = {
                 'file_name':
@@ -126,45 +198,45 @@ class ResultSaver:
                     'id': seg['id'],
                     'score': seg['score'],
                     'rle': seg['rle_mask'],
-                } for seg in all_segments_info],
+                } for seg in segments_info],
             }
-            self.all_annotations.append(this_annotation)
-        elif self.visualize:
+            saver.all_annotations.append(this_annotation)
+        elif saver.visualize:
             # if we are visualizing, we need to preprocess segment info
-            for seg in all_segments_info:
+            for seg in segments_info:
                 area = int((mask == seg['id']).sum())
                 seg['area'] = area
             # filter out zero-area segments
-            all_segments_info = [s for s in all_segments_info if s['area'] > 0]
+            segments_info = [s for s in segments_info if s['area'] > 0]
 
         # save the mask to disk
         if save_the_mask:
-            if self.object_manager.use_long_id:
+            if saver.object_manager.use_long_id:
                 out_mask = mask.cpu().numpy().astype(np.uint32)
                 rgb_mask = np.zeros((*out_mask.shape[-2:], 3), dtype=np.uint8)
-                for id in self.object_manager.all_obj_ids:
-                    colored_mask = self.id2rgb_converter._id_to_rgb(id)
+                for id in all_obj_ids:
+                    colored_mask = saver.id2rgb_converter._id_to_rgb(id)
                     obj_mask = (out_mask == id)
                     rgb_mask[obj_mask] = colored_mask
                 out_img = Image.fromarray(rgb_mask)
             else:
                 out_img = Image.fromarray(mask.cpu().numpy().astype(np.uint8))
-                if self.palette is not None:
-                    out_img.putpalette(self.palette)
+                if saver.palette is not None:
+                    out_img.putpalette(saver.palette)
 
-            if self.dataset != 'gradio':
+            if saver.dataset != 'gradio':
                 # find a place to save the mask
-                if self.output_postfix is not None:
-                    this_out_path = path.join(self.output_root, self.output_postfix)
+                if saver.output_postfix is not None:
+                    this_out_path = path.join(saver.output_root, saver.output_postfix)
                 else:
-                    this_out_path = self.output_root
-                if self.video_name is not None:
-                    this_out_path = path.join(this_out_path, self.video_name)
+                    this_out_path = saver.output_root
+                if saver.video_name is not None:
+                    this_out_path = path.join(this_out_path, saver.video_name)
 
                 os.makedirs(this_out_path, exist_ok=True)
                 out_img.save(path.join(this_out_path, frame_name[:-4] + '.png'))
 
-            if self.visualize:
+            if saver.visualize:
                 if image_np is None:
                     if path_to_image is not None:
                         image_np = np.array(Image.open(path_to_image))
@@ -180,7 +252,7 @@ class ResultSaver:
                     labels = []
                     all_cat_ids = []
                     all_scores = []
-                    for seg in all_segments_info:
+                    for seg in segments_info:
                         all_masks.append(mask == seg['id'])
                         labels.append(f'{prompts[seg["category_id"]]} {seg["score"]:.2f}')
                         all_cat_ids.append(seg['category_id'])
@@ -198,18 +270,18 @@ class ResultSaver:
                                                    detections=detections,
                                                    labels=labels)
 
-                if self.dataset != 'gradio':
+                if saver.dataset != 'gradio':
                     # find a place to save the visualization
-                    if self.visualize_postfix is not None:
-                        this_out_path = path.join(self.output_root, self.visualize_postfix)
+                    if saver.visualize_postfix is not None:
+                        this_out_path = path.join(saver.output_root, saver.visualize_postfix)
                     else:
-                        this_out_path = self.output_root
-                    if self.video_name is not None:
-                        this_out_path = path.join(this_out_path, self.video_name)
+                        this_out_path = saver.output_root
+                    if saver.video_name is not None:
+                        this_out_path = path.join(this_out_path, saver.video_name)
 
                     os.makedirs(this_out_path, exist_ok=True)
                     Image.fromarray(blend).save(path.join(this_out_path, frame_name[:-4] + '.jpg'))
                 else:
-                    self.writer.write(blend[:, :, ::-1])
+                    saver.writer.write(blend[:, :, ::-1])
 
-        return mask
+        queue.task_done()
