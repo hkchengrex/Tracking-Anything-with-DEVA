@@ -133,10 +133,9 @@ class ResultArgs:
     obj_to_tmp_id: Dict[ObjectInfo, int]
     segments_info: List[Dict]
 
-def save_result(queue):
+def save_result(queue :Queue):
     while True:
         args = queue.get()
-
         if args is None:
             queue.task_done()
             break
