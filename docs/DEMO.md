@@ -4,7 +4,7 @@
 
 **General Tips:**
 
-- Though innocently looking, reading frames from disk, visualizing the output, and encoding the output as videos can be slow, especially at high resolutions. The script version runs faster than the gradio version because it is more streamlined. Try to disable the visualization with `--no_visualize` (not yet implemented).
+- Though innocently looking, reading frames from disk, visualizing the output, and encoding the output as videos can be slow, especially at high resolutions. The script version runs faster than the gradio version because it uses threaded I/O.
 - Specifying `--amp` (automatic fixed precision) makes things run faster on most modern GPUs.
 - In general, text-prompted inference is faster and more robust than "automatic" inference.
 - To speed up the actual processing, we need to speed up either the image model or the propagation model.
