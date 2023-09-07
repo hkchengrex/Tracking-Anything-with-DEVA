@@ -25,7 +25,6 @@
   - Reduce `max_missed_detection_count` to delete objects more readily.
   - In automatic mode, enable `suppress_small_objects` to get larger and fewer segments. Note this option has its own overhead.
 - Reduce the internal processing resolution `size`. Note this does not affect the image model.
-- Try the `fast_memory` option (not yet implemented).
 - Increasing `chunk_size` improves parallelism.
 
 ## Explanation of arguments
