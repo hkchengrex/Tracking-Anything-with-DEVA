@@ -82,6 +82,7 @@ class ResultSaver:
 
         self.queue = Queue(maxsize=10)
         self.thread = Thread(target=save_result, args=(self.queue, ))
+        self.thread.daemon = True
         self.thread.start()
 
     def save_mask(self,
