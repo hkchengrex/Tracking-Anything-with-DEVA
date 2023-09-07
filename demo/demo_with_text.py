@@ -3,9 +3,11 @@ from os import path
 from argparse import ArgumentParser
 
 import torch
+from torch.utils.data import DataLoader
 import numpy as np
 
 from deva.inference.inference_core import DEVAInferenceCore
+from deva.inference.data.simple_video_reader import SimpleVideoReader, no_collate
 from deva.inference.result_utils import ResultSaver
 from deva.inference.eval_args import add_common_eval_args, get_model_and_config
 from deva.inference.demo_utils import flush_buffer
@@ -39,11 +41,12 @@ if __name__ == '__main__':
     cfg['pluralize'] = not args.do_not_pluralize
 
     # get data
-    frames = sorted(os.listdir(cfg['img_path']))
+    video_reader = SimpleVideoReader(cfg['img_path'])
+    loader = DataLoader(video_reader, batch_size=None, collate_fn=no_collate, num_workers=8)
     out_path = cfg['output']
 
     # Start eval
-    vid_length = len(frames)
+    vid_length = len(loader)
     # no need to count usage for LT if the video is not that long anyway
     cfg['enable_long_term_count_usage'] = (
         cfg['enable_long_term']
@@ -58,9 +61,8 @@ if __name__ == '__main__':
     result_saver = ResultSaver(out_path, None, dataset='demo', object_manager=deva.object_manager)
 
     with torch.cuda.amp.autocast(enabled=cfg['amp']):
-        for ti, frame in enumerate(tqdm(frames)):
-            frame_path = path.join(cfg['img_path'], frame)
-            process_frame(deva, gd_model, sam_model, frame_path, result_saver, ti)
+        for ti, (frame, im_path) in enumerate(tqdm(loader)):
+            process_frame(deva, gd_model, sam_model, im_path, result_saver, ti, image_np=frame)
         flush_buffer(deva, result_saver)
 
     # save this as a video-level json

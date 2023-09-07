@@ -35,9 +35,10 @@ def process_frame_with_text(deva: DEVAInferenceCore,
                             result_saver: ResultSaver,
                             ti: int,
                             image_np: np.ndarray = None) -> None:
+    # image_np, if given, should be in RGB
     if image_np is None:
         image_np = cv2.imread(frame_path)
-    image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+        image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
     cfg = deva.config
     raw_prompt = cfg['prompt']
     prompts = raw_prompt.split('.')

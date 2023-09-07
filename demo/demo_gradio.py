@@ -79,7 +79,7 @@ def demo_with_text(video: gr.Video, text: str, threshold: float, max_num_objects
                                         'null.png',
                                         result_saver,
                                         ti,
-                                        image_np=frame)
+                                        image_np=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                     ti += 1
                     pbar.update(1)
                 else:
@@ -151,7 +151,7 @@ def demo_automatic(video: gr.Video, threshold: float, points_per_side: int, max_
                                         'null.png',
                                         result_saver,
                                         ti,
-                                        image_np=frame)
+                                        image_np=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                     ti += 1
                     pbar.update(1)
                 else:
