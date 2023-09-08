@@ -80,6 +80,10 @@ If a license is not found, we fall back to using [PuLP](https://github.com/coin-
 
 Install [our fork of Grounded-Segment-Anything](https://github.com/hkchengrex/Grounded-Segment-Anything). Follow its instructions.
 
+Grounding DINO installation might fail silently.
+Try `python -c "from groundingdino.util.inference import Model as GroundingDINOModel"`.
+If you get a warning about running on CPU mode only, make sure you have `CUDA_HOME` set during Grounding DINO installation.
+
 ## Quick Start
 
 [DEMO.md](docs/DEMO.md) contains more details on the input arguments and tips on speeding up inference.
