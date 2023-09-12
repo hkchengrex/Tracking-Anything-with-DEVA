@@ -63,7 +63,6 @@ def add_text_default_args(parser):
                         help='Max. num of objects to keep in memory. -1 for no limit')
     parser.add_argument('--prompt', type=str, help='Separate classes with a single fullstop')
     parser.add_argument('--sam_variant', default='original', help='mobile/original')
-    parser.add_argument('--do_not_pluralize', action='store_true')
     return parser
 
 

@@ -14,6 +14,8 @@ ICCV 2023
 1. Provide long-term, open-vocabulary video segmentation with text-prompts out-of-the-box.
 2. Fairly easy to **integrate your own image model**! Wouldn't you or your reviewers be interested in seeing examples where your image model also works well on videos :smirk:? No finetuning is needed!
 
+***Note:*** We have removed the "pluralize" option as it works weirdly sometimes with GroundingDINO. If needed, please pluralize the prompt yourself.
+
 ## Abstract
 
 We develop a decoupled video segmentation approach (**DEVA**), composed of task-specific image-level segmentation and class/task-agnostic bi-directional temporal propagation.

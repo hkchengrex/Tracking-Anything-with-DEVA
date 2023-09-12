@@ -32,7 +32,6 @@ dependencies = [
   'PuLP',
   'gradio',
   'gdown',
-  'inflect',
 ]
 
 [project.urls]

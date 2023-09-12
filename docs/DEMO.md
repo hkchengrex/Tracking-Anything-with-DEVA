@@ -40,7 +40,6 @@
 - `size`: internal processing resolution for the propagation module; defaults to 480
 - `max_missed_detection_count`: maximum number of consecutive detections that can be missed before an object is deleted from memory
 - `max_num_objects`: maximum number of objects that can be tracked at the same time; new objects are ignored if this is exceeded
-- `do_not_pluralize`: pluralization is enabled by default, e.g., turning "pig" into "pigs" and "person" into "people". This seems to increase recall. If you want to disable pluralization, set this to True.
 - `suppress_small_objects`: if enabled, small objects that overlap with large objects are suppressed during the automatic mode; does not matter in the text-prompted mode
 
 ## Source videos
