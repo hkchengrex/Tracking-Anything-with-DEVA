@@ -25,7 +25,13 @@ We show that this decoupled formulation compares favorably to end-to-end approac
 
 ## Demo Videos
 
-### Demo with Grounded Segment Anything (text prompt: "pig"):
+### Demo with Grounded Segment Anything (text prompt: "guinea pigs" and "chicken"):
+
+https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/457a9a6a-86c3-4c5a-a3cc-25199427cd11
+
+Source: https://www.youtube.com/watch?v=FM9SemMfknA
+
+### Demo with Grounded Segment Anything (text prompt: "pigs"):
 
 https://github.com/hkchengrex/Tracking-Anything-with-DEVA/assets/7107196/9a6dbcd1-2c84-45c8-ac0a-4ad31169881f
 
