@@ -108,7 +108,7 @@ def process_frame_with_text(deva: DEVAInferenceCore,
         if ti % cfg['detection_every'] == 0:
             # incorporate new detections
             mask, segments_info = make_segmentation_with_text(cfg, image_np, gd_model, sam_model,
-                                                              input_prompt, new_min_side)
+                                                              prompts, new_min_side)
             frame_info.segments_info = segments_info
             prob = deva.incorporate_detection(image, mask, segments_info)
         else:
