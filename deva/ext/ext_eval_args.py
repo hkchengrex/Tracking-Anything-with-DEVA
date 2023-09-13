@@ -25,7 +25,7 @@ def add_ext_eval_args(parser: ArgumentParser):
     parser.add_argument('--SAM_NUM_POINTS_PER_SIDE',
                         type=int,
                         help='Number of points per side for prompting SAM',
-                        default=32)
+                        default=64)
     parser.add_argument('--SAM_NUM_POINTS_PER_BATCH',
                         type=int,
                         help='Number of points computed per batch',
