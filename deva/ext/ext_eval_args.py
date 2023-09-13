@@ -50,13 +50,6 @@ def add_text_default_args(parser):
 
     parser.add_argument('--temporal_setting', default='semionline', help='semionline/online')
     parser.add_argument('--max_missed_detection_count', type=int, default=10)
-    parser.add_argument('--match_and_merge_mode',
-                        default='iou',
-                        help='iou/engulf, see segment_merging.py')
-    parser.add_argument('--engulf_threshold',
-                        default=0.2,
-                        type=float,
-                        help='see segment_merging.py')
     parser.add_argument('--max_num_objects',
                         default=-1,
                         type=int,
@@ -75,14 +68,7 @@ def add_auto_default_args(parser):
                         help='Number of frames selected for voting. only valid in semionline')
 
     parser.add_argument('--temporal_setting', default='semionline', help='semionline/online')
-    parser.add_argument('--max_missed_detection_count', type=int, default=999)
-    parser.add_argument('--match_and_merge_mode',
-                        default='engulf',
-                        help='iou/engulf, see segment_merging.py')
-    parser.add_argument('--engulf_threshold',
-                        default=0.2,
-                        type=float,
-                        help='see segment_merging.py')
+    parser.add_argument('--max_missed_detection_count', type=int, default=5)
     parser.add_argument('--max_num_objects',
                         default=200,
                         type=int,

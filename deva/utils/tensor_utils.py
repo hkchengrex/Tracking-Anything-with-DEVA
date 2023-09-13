@@ -38,6 +38,11 @@ def unpad(img: torch.Tensor, pad: Iterable[int]) -> torch.Tensor:
             img = img[:, :, :, pad[2]:-pad[3], :]
         if pad[0] + pad[1] > 0:
             img = img[:, :, :, :, pad[0]:-pad[1]]
+    elif len(img.shape) == 2:
+        if pad[2] + pad[3] > 0:
+            img = img[pad[2]:-pad[3], :]
+        if pad[0] + pad[1] > 0:
+            img = img[:, pad[0]:-pad[1]]
     else:
         raise NotImplementedError
     return img

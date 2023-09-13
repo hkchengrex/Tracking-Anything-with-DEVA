@@ -1,5 +1,24 @@
 # Details on the Demo
 
+## Pipeline 
+
+The high-level description below is for the online setting. In the semi-online setting, the detections are first merged across a small clip.
+The first frame is always initialized with detection without propagation.
+
+### Text-prompted mode
+1. DEVA propagates masks from memory to the current frame
+2. If this is a detection frame, go to the next step. Otherwise, no further processing is needed for this frame.
+3. Grounding DINO takes the text prompt and generates some bounding boxes
+4. Segment Anything takes the bounding boxes and generates corresponding segmentation masks
+5. The propagated masks are compared to and merged with the segmentation from Segment Anything
+
+### Automatic mode
+1. DEVA propagates masks from memory to the current frame.
+2. If this is a detection frame, go to the next step. Otherwise, no further processing is needed for this frame.
+3. We generate a grid of points on the unsegmented regions.
+4. Segment Anything takes the points and generates corresponding segmentation masks.
+5. The propagated masks are compared to and merged with the segmentation from Segment Anything.
+
 ## Tips on Speeding up Inference
 
 **General Tips:**
@@ -30,12 +49,11 @@
 ## Explanation of arguments
 
 General:
-- `match_and_merge_mode`: can be set to `iou` or `engulf`. This controls how segment merging (Section 3.2.2) is done. The "iou" mode is as described in the paper. 
 - `detection_every`: number of frames between two consecutive detections; a higher number means faster inference but slower responses to new objects
 - `amp`: enable mixed precision; is faster and has a lower memory usage
 - `chunk_size`: number of objects to be processed in parallel; a higher number means faster inference but higher memory usage
 - `size`: internal processing resolution for the propagation module; defaults to 480
-- `max_missed_detection_count`: maximum number of consecutive detections that can be missed before an object is deleted from memory
+- `max_missed_detection_count`: maximum number of consecutive detections that can be missed before an object is deleted from memory. 
 - `max_num_objects`: maximum number of objects that can be tracked at the same time; new objects are ignored if this is exceeded
 
 Text-prompted mode only:

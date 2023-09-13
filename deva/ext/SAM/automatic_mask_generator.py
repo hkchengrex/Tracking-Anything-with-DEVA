@@ -139,7 +139,10 @@ class SamAutomaticMaskGenerator:
         self.output_mode = output_mode
 
     @torch.no_grad()
-    def generate(self, image: np.ndarray) -> List[Dict[str, Any]]:
+    def generate(self,
+                 image: np.ndarray,
+                 positive_points: Optional[np.ndarray] = None,
+                 negative_points: Optional[np.ndarray] = None) -> List[Dict[str, Any]]:
         """
         Generates masks for the given image.
 
@@ -165,7 +168,7 @@ class SamAutomaticMaskGenerator:
         """
 
         # Generate masks
-        mask_data = self._generate_masks(image)
+        mask_data = self._generate_masks(image, positive_points, negative_points)
 
         # Filter small disconnected regions and holes in masks
         if self.min_mask_region_area > 0:
@@ -200,7 +203,10 @@ class SamAutomaticMaskGenerator:
         # return curr_anns
         return mask_data
 
-    def _generate_masks(self, image: np.ndarray) -> MaskData:
+    def _generate_masks(self,
+                        image: np.ndarray,
+                        positive_points: Optional[np.ndarray] = None,
+                        negative_points: Optional[np.ndarray] = None) -> MaskData:
         orig_size = image.shape[:2]
         crop_boxes, layer_idxs = generate_crop_boxes(orig_size, self.crop_n_layers,
                                                      self.crop_overlap_ratio)
@@ -208,7 +214,8 @@ class SamAutomaticMaskGenerator:
         # Iterate over image crops
         data = MaskData()
         for crop_box, layer_idx in zip(crop_boxes, layer_idxs):
-            crop_data = self._process_crop(image, crop_box, layer_idx, orig_size)
+            crop_data = self._process_crop(image, crop_box, layer_idx, orig_size, positive_points,
+                                           negative_points)
             data.cat(crop_data)
 
         # Remove duplicate masks between crops
@@ -233,6 +240,8 @@ class SamAutomaticMaskGenerator:
         crop_box: List[int],
         crop_layer_idx: int,
         orig_size: Tuple[int, ...],
+        positive_points: Optional[np.ndarray] = None,
+        negative_points: Optional[np.ndarray] = None,
     ) -> MaskData:
         # Crop the image and calculate embeddings
         x0, y0, x1, y1 = crop_box
@@ -242,12 +251,19 @@ class SamAutomaticMaskGenerator:
 
         # Get points for this crop
         points_scale = np.array(cropped_im_size)[None, ::-1]
-        points_for_image = self.point_grids[crop_layer_idx] * points_scale
+        if positive_points is not None:
+            points_for_image = positive_points * points_scale
+        else:
+            points_for_image = self.point_grids[crop_layer_idx] * points_scale
+
+        if negative_points is not None:
+            negative_points = negative_points * points_scale
 
         # Generate masks for this crop in batches
         data = MaskData()
         for (points, ) in batch_iterator(self.points_per_batch, points_for_image):
-            batch_data = self._process_batch(points, cropped_im_size, crop_box, orig_size)
+            batch_data = self._process_batch(points, negative_points, cropped_im_size, crop_box,
+                                             orig_size)
             data.cat(batch_data)
             del batch_data
         self.predictor.reset_image()
@@ -271,6 +287,7 @@ class SamAutomaticMaskGenerator:
     def _process_batch(
         self,
         points: np.ndarray,
+        negative_points: Optional[np.ndarray],
         im_size: Tuple[int, ...],
         crop_box: List[int],
         orig_size: Tuple[int, ...],
@@ -278,12 +295,28 @@ class SamAutomaticMaskGenerator:
         orig_h, orig_w = orig_size
 
         # Run model on this batch
-        transformed_points = self.predictor.transform.apply_coords(points, im_size)
-        in_points = torch.as_tensor(transformed_points, device=self.predictor.device)
-        in_labels = torch.ones(in_points.shape[0], dtype=torch.int, device=in_points.device)
+        # negative_points = None
+        if negative_points is not None:
+            # with negative points
+            negative_points = np.repeat(negative_points[None, :, :], points.shape[0], axis=0)
+            points = np.concatenate([points[:, None, :], negative_points], axis=1)
+            transformed_points = self.predictor.transform.apply_coords(points, im_size)
+            in_points = torch.as_tensor(transformed_points, device=self.predictor.device)
+            in_labels = torch.zeros((in_points.shape[0], in_points.shape[1]),
+                                    dtype=torch.int,
+                                    device=in_points.device)
+            in_labels[:, 0] = 1
+        else:
+            # positive points only
+            transformed_points = self.predictor.transform.apply_coords(points, im_size)
+            in_points = torch.as_tensor(transformed_points, device=self.predictor.device)
+            in_labels = torch.ones(in_points.shape[0], dtype=torch.int, device=in_points.device)
+            in_points = in_points[:, None, :]
+            in_labels = in_labels[:, None]
+
         masks, iou_preds, _ = self.predictor.predict_torch(
-            in_points[:, None, :],
-            in_labels[:, None],
+            in_points,
+            in_labels,
             multimask_output=True,
             return_logits=True,
         )

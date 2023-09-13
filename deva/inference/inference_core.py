@@ -25,8 +25,6 @@ class DEVAInferenceCore:
         self.enable_long_term = config['enable_long_term']
         self.chunk_size = config['chunk_size']
         self.max_missed_detection_count = config.get('max_missed_detection_count')
-        self.match_and_merge_mode = config.get('match_and_merge_mode')
-        self.engulf_threshold = config.get('engulf_threshold')
         self.max_num_objects = config.get('max_num_objects')
         self.config = config
 
@@ -141,7 +139,8 @@ class DEVAInferenceCore:
                               new_mask: torch.Tensor,
                               segments_info: List[ObjectInfo],
                               *,
-                              image_ti_override: bool = None) -> torch.Tensor:
+                              image_ti_override: bool = None,
+                              forward_mask: torch.Tensor = None) -> torch.Tensor:
         # this is used for merging detections from an image-based model
         # it is not used for VOS inference
         self.curr_ti += 1
@@ -158,22 +157,22 @@ class DEVAInferenceCore:
         ms_features = self.image_feature_store.get_ms_features(image_ti, image)
         key, shrinkage, selection = self.image_feature_store.get_key(image_ti, image)
 
-        if self.memory.engaged:
-            # forward prediction
-            prob = self._segment(key, selection, ms_features)
-            forward_mask = torch.argmax(prob, dim=0)
-        else:
-            # initialization
-            forward_mask = torch.zeros_like(new_mask)
+        if forward_mask is None:
+            if self.memory.engaged:
+                # forward prediction
+                prob = self._segment(key, selection, ms_features)
+                forward_mask = torch.argmax(prob, dim=0)
+            else:
+                # initialization
+                forward_mask = torch.zeros_like(new_mask)
 
         # merge masks (Section 3.2.2)
         merged_mask = match_and_merge(forward_mask,
                                       new_mask,
                                       self.object_manager,
                                       segments_info,
-                                      mode=self.match_and_merge_mode,
                                       max_num_objects=self.max_num_objects,
-                                      engulf_threshold=self.engulf_threshold)
+                                      incremental_mode=(forward_mask is not None))
 
         # find inactive objects that we need to delete
         purge_activated, tmp_keep_idx, obj_keep_idx = self.object_manager.purge_inactive_objects(
