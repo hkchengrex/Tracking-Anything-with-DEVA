@@ -94,13 +94,17 @@ class ResultSaver:
                   image_np: np.ndarray = None,
                   prompts: List[str] = None,
                   path_to_image: str = None):
-        
+
+        if need_resize:
+            prob = F.interpolate(prob.unsqueeze(1), shape, mode='bilinear', align_corners=False)[:,
+                                                                                                 0]
+        # Probability mask -> index mask
+        mask = torch.argmax(prob, dim=0)
+
         args = ResultArgs(
             saver=self,
-            prob=prob,
+            mask=mask.cpu(),
             frame_name=frame_name,
-            need_resize=need_resize,
-            shape=shape,
             save_the_mask=save_the_mask,
             image_np=image_np,
             prompts=prompts,
@@ -121,10 +125,8 @@ class ResultSaver:
 @dataclass
 class ResultArgs:
     saver: ResultSaver
-    prob: torch.Tensor
+    mask: torch.Tensor
     frame_name: str
-    need_resize: bool
-    shape: Optional[Tuple[int, int]]
     save_the_mask: bool
     image_np: np.ndarray
     prompts: List[str]
@@ -133,7 +135,8 @@ class ResultArgs:
     obj_to_tmp_id: Dict[ObjectInfo, int]
     segments_info: List[Dict]
 
-def save_result(queue :Queue):
+
+def save_result(queue: Queue):
     while True:
         args: ResultArgs = queue.get()
         if args is None:
@@ -141,10 +144,8 @@ def save_result(queue :Queue):
             break
 
         saver = args.saver
-        prob = args.prob
+        mask = args.mask
         frame_name = args.frame_name
-        need_resize = args.need_resize
-        shape = args.shape
         save_the_mask = args.save_the_mask
         image_np = args.image_np
         prompts = args.prompts
@@ -153,13 +154,6 @@ def save_result(queue :Queue):
         obj_to_tmp_id = args.obj_to_tmp_id
         segments_info = args.segments_info
         all_obj_ids = [k.id for k in obj_to_tmp_id]
-
-        if need_resize:
-            prob = F.interpolate(prob.unsqueeze(1), shape, mode='bilinear', align_corners=False)[:,
-                                                                                                 0]
-
-        # Probability mask -> index mask
-        mask = torch.argmax(prob, dim=0)
 
         # remap indices
         if saver.need_remapping:
@@ -185,7 +179,7 @@ def save_result(queue :Queue):
             for seg in segments_info:
                 seg['mask'] = mask == seg['id']
                 seg['area'] = int(seg['mask'].sum())
-                coco_mask = mask_util.encode(np.asfortranarray(seg['mask'].cpu().numpy()))
+                coco_mask = mask_util.encode(np.asfortranarray(seg['mask'].numpy()))
                 coco_mask['counts'] = coco_mask['counts'].decode('utf-8')
                 seg['rle_mask'] = coco_mask
             # filter out zero-area segments
@@ -212,7 +206,7 @@ def save_result(queue :Queue):
         # save the mask to disk
         if save_the_mask:
             if saver.object_manager.use_long_id:
-                out_mask = mask.cpu().numpy().astype(np.uint32)
+                out_mask = mask.numpy().astype(np.uint32)
                 rgb_mask = np.zeros((*out_mask.shape[-2:], 3), dtype=np.uint8)
                 for id in all_obj_ids:
                     colored_mask = saver.id2rgb_converter._id_to_rgb(id)
@@ -220,7 +214,7 @@ def save_result(queue :Queue):
                     rgb_mask[obj_mask] = colored_mask
                 out_img = Image.fromarray(rgb_mask)
             else:
-                out_img = Image.fromarray(mask.cpu().numpy().astype(np.uint8))
+                out_img = Image.fromarray(mask.numpy().astype(np.uint8))
                 if saver.palette is not None:
                     out_img.putpalette(saver.palette)
 
@@ -260,7 +254,7 @@ def save_result(queue :Queue):
                     if len(all_masks) > 0:
                         all_masks = torch.stack(all_masks, dim=0)
                         xyxy = torchvision.ops.masks_to_boxes(all_masks)
-                        xyxy = xyxy.cpu().numpy()
+                        xyxy = xyxy.numpy()
 
                         detections = sv.Detections(xyxy,
                                                    confidence=np.array(all_scores),
