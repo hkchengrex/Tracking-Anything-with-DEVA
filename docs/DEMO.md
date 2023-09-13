@@ -5,7 +5,7 @@
 The high-level description below is for the online setting. In the semi-online setting, the detections are first merged across a small clip.
 The first frame is always initialized with detection without propagation.
 
-### Text-prompted mode
+### Text-prompted mode (recommended)
 1. DEVA propagates masks from memory to the current frame
 2. If this is a detection frame, go to the next step. Otherwise, no further processing is needed for this frame.
 3. Grounding DINO takes the text prompt and generates some bounding boxes
