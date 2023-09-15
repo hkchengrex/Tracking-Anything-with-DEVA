@@ -82,18 +82,19 @@ pip install -e .
 bash scripts/download_models.sh
 ```
 
-**(Optional) For fast integer program solving in the semi-online setting:** 
-
-Get your [gurobi](https://www.gurobi.com/) licence which is free for academic use. 
-If a license is not found, we fall back to using [PuLP](https://github.com/coin-or/pulp) which is slower and is not rigorously tested by us. All experiments are conducted with gurobi.
-
-**(Optional) For text-prompted/automatic demo:**
+**Required for the text-prompted/automatic demo:**
 
 Install [our fork of Grounded-Segment-Anything](https://github.com/hkchengrex/Grounded-Segment-Anything). Follow its instructions.
 
 Grounding DINO installation might fail silently.
 Try `python -c "from groundingdino.util.inference import Model as GroundingDINOModel"`.
 If you get a warning about running on CPU mode only, make sure you have `CUDA_HOME` set during Grounding DINO installation.
+
+**(Optional) For fast integer program solving in the semi-online setting:** 
+
+Get your [gurobi](https://www.gurobi.com/) licence which is free for academic use. 
+If a license is not found, we fall back to using [PuLP](https://github.com/coin-or/pulp) which is slower and is not rigorously tested by us. All experiments are conducted with gurobi.
+
 
 ## Quick Start
 
