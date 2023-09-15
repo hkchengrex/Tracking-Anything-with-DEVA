@@ -75,7 +75,7 @@ git clone https://github.com/hkchengrex/Tracking-Anything-with-DEVA.git
 cd Tracking-Anything-with-DEVA
 pip install -e .
 ```
-(If you encounter the "File "setup.py" not found" error, upgrade your pip with `pip install --upgrade pip`)
+(If you encounter the `File "setup.py" not found` error, upgrade your pip with `pip install --upgrade pip`)
 
 **Download the pretrained models:**
 ```bash
