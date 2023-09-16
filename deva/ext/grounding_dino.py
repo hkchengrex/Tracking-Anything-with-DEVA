@@ -11,7 +11,7 @@ import torchvision
 try:
     from groundingdino.util.inference import Model as GroundingDINOModel
 except ImportError:
-    # not sure why this happens somethimes
+    # not sure why this happens sometimes
     from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
 from segment_anything import sam_model_registry, SamPredictor
 from deva.ext.MobileSAM.setup_mobile_sam import setup_model as setup_mobile_sam
