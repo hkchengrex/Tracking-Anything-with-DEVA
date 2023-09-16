@@ -14,7 +14,7 @@ from deva.ext.grounding_dino import segment_with_text
 try:
     from groundingdino.util.inference import Model as GroundingDINOModel
 except ImportError:
-    # not sure why this happens somethimes
+    # not sure why this happens sometimes
     from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
 from segment_anything import SamPredictor
 
