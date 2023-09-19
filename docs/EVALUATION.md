@@ -5,7 +5,7 @@ We provide five evaluation scripts that can be used on common benchmarks. If you
 The scripts are:
 1. Video Object Segmentation (VOS) evaluation
 2. Open-World/Large-Vocabulary/Unsupervised Video Object Segmentation on VIPSeg/BURST/DAVIS 2017
-3. Unsupvised Video Object Segmentation (or rather, saliency) on DAVIS 2016
+3. Unsupervised Video Object Segmentation (or rather, saliency) on DAVIS 2016
 4. Referring Video Object Segmentation (Ref-VOS) evaluation for the Ref-DAVIS dataset
 5. Referring Video Object Segmentation (Ref-VOS) evaluation for the Ref-YouTubeVOS dataset
 
@@ -44,7 +44,7 @@ To get quantitative results:
 - YouTubeVOS 2019 validation: [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/6066)
 
 
-*Known issue: We note that DEVA video object segmentation does not perform as well as XMem for very long videos after further testing. This characterized by a much higher false positive rate when the target object is out-of-view. This might be a consequence of "stable data augmentation" which means the target object is in-view most of the time.during training.*
+*Known issue: We note that DEVA video object segmentation does not perform as well as XMem for very long videos after further testing. This characterized by a much higher false positive rate when the target object is out-of-view. This might be a consequence of "stable data augmentation" which means the target object is in-view most of the time during training.*
 
 ## Open-World/Large-Vocabulary/Unsupervised Video Object Segmentation
 

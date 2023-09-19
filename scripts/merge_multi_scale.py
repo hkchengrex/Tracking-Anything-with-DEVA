@@ -80,7 +80,7 @@ if __name__ == '__main__':
     parser.add_argument('--list', nargs="+")
     parser.add_argument('--pattern',
                         default=None,
-                        help='Glob patten. Can be used in place of list.')
+                        help='Glob pattern. Can be used in place of list.')
     parser.add_argument('--output')
     parser.add_argument('--num_proc', default=4, type=int)
     args = parser.parse_args()
