@@ -59,7 +59,7 @@ Source: https://youtu.be/FQQaSyH9hZI
 
 ## Installation
 
-(Tested on Ubuntu only)
+Tested on Ubuntu only. For installation on Windows WSL2, refer to https://github.com/hkchengrex/Tracking-Anything-with-DEVA/issues/20 (thanks @21pl).
 
 **Prerequisite:**
 - Python 3.7+
