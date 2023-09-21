@@ -13,7 +13,7 @@ Only (1) is standalone. (2)-(5) require detections from an image model.
 
 We provide:
 1. Pretrained DEVA model (which you can obtain from `scripts/download_models.sh`).
-2. Pre-computed detections from image models.[[All can be found here]](https://drive.google.com/drive/folders/1iBJBoKZAFaNYM_6uwBR0Vvc6q0nHXbFR?usp=sharing).
+2. Pre-computed detections from image models. [[All can be found here]](https://drive.google.com/drive/folders/1iBJBoKZAFaNYM_6uwBR0Vvc6q0nHXbFR?usp=sharing).
 3. Pre-computed outputs from DEVA. [[All can be found here]](https://drive.google.com/drive/folders/1iBJBoKZAFaNYM_6uwBR0Vvc6q0nHXbFR?usp=sharing).
 4. Links to the repositories of the image models.
 
