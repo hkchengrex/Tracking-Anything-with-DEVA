@@ -68,7 +68,7 @@ def auto_segment(config: Dict, auto_sam: SamAutomaticMaskGenerator, image: np.nd
         # compute positive and negative points
         foreground_mask = (forward_mask > 0).float().unsqueeze(0).unsqueeze(0)
         foreground_mask = F.interpolate(foreground_mask,
-                                        scale_factor=1 / 4,
+                                        scale_factor=1 / 16,
                                         mode='bilinear',
                                         antialias=True)  # blurring
         n_per_side = config['SAM_NUM_POINTS_PER_SIDE']
@@ -126,11 +126,17 @@ def auto_segment(config: Dict, auto_sam: SamAutomaticMaskGenerator, image: np.nd
                     segments_info.append(ObjectInfo(id=curr_id, score=predicted_iou[k].item()))
                     curr_id += 1
         else:
+            # prefer smaller objects
+            areas = pred_masks.flatten(-2).sum(-1)
+            scores = (areas.max() * 2 - areas).unsqueeze(-1).unsqueeze(-1)
+            scored_masks = pred_masks * scores
+
             # add background channel
-            pred_masks = torch.cat(
-                [torch.zeros((1, *pred_masks.shape[1:]), device=device) + 0.5, pred_masks], dim=0)
-            output_mask = torch.argmax(pred_masks, dim=0)
-            for k in range(pred_masks.shape[0]):
+            scored_masks_with_bg = torch.cat(
+                [torch.zeros((1, *scored_masks.shape[1:]), device=device) + 0.1, scored_masks],
+                dim=0)
+            output_mask = torch.argmax(scored_masks_with_bg, dim=0)
+            for k in range(scored_masks.shape[0]):
                 mask = (output_mask == (k + 1))
                 if mask.sum() > 0:
                     segments_info.append(ObjectInfo(id=curr_id, score=predicted_iou[k].item()))
