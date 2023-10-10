@@ -113,7 +113,7 @@ def match_and_merge(our_mask: torch.Tensor,
     new_masks = {obj: (new_mask == obj.id) for obj in new_segments_info}
 
     if max_num_objects > 0 and len(
-            object_manager.all_historical_object_ids) + len(new_segments_info) > max_num_objects:
+            object_manager.obj_to_tmp_id) + len(new_segments_info) > max_num_objects:
         # too many objects; forcibly deny all new objects
         warnings.warn(
             'Number of objects exceeded maximum (--max_num_objects); discarding new objects')
