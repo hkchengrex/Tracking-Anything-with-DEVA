@@ -134,7 +134,7 @@ python demo/demo_automatic.py --chunk_size 4 \
 2. [Running DEVA with detections to reproduce the benchmark results.](docs/EVALUATION.md)
 3. [Training the DEVA model.](docs/TRAINING.md)
 
-## Limitation
+## Limitations
 
 - On closed-set data, DEVA most likely does not work as well as end-to-end approaches. Joint training is (for now) still a better idea when you have enough target data.
 - Positive detections are amplified temporally due to propagation. Having a detector with a lower false positive rate (i.e., a higher threshold) helps.
