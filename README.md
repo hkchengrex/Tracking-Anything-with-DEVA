@@ -134,6 +134,12 @@ python demo/demo_automatic.py --chunk_size 4 \
 2. [Running DEVA with detections to reproduce the benchmark results.](docs/EVALUATION.md)
 3. [Training the DEVA model.](docs/TRAINING.md)
 
+## Limitation
+
+- On closed-set data, DEVA most likely does not work as well as end-to-end approaches. Joint training is (for now) still a better idea when you have enough target data.
+- Positive detections are amplified temporally due to propagation. Having a detector with a lower false positive rate (i.e., a higher threshold) helps.
+- If new objects are coming in and out all the time (e.g., in driving scenes), we will keep a lot of objects in the memory bank which unfortunately increases the false positive rate. Decreasing `max_missed_detection_count` might help since we delete objects from memory more eagerly.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://imgur.com/aouI1WU.png">
   <source media="(prefers-color-scheme: light)" srcset="https://imgur.com/aCbrA9S.png">
