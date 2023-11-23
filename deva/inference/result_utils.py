@@ -214,7 +214,8 @@ def save_result(queue: Queue):
                     rgb_mask[obj_mask] = colored_mask
                 out_img = Image.fromarray(rgb_mask)
             else:
-                out_img = Image.fromarray(mask.numpy().astype(np.uint8))
+                out_mask = mask.numpy().astype(np.uint8)
+                out_img = Image.fromarray(out_mask)
                 if saver.palette is not None:
                     out_img.putpalette(saver.palette)
 
@@ -230,7 +231,7 @@ def save_result(queue: Queue):
                 os.makedirs(this_out_path, exist_ok=True)
                 out_img.save(path.join(this_out_path, frame_name[:-4] + '.png'))
 
-            if saver.visualize:
+            if saver.visualize and saver.object_manager.use_long_id:
                 if image_np is None:
                     if path_to_image is not None:
                         image_np = np.array(Image.open(path_to_image))
