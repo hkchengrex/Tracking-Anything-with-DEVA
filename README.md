@@ -62,7 +62,7 @@ Source: https://youtu.be/FQQaSyH9hZI
 Tested on Ubuntu only. For installation on Windows WSL2, refer to https://github.com/hkchengrex/Tracking-Anything-with-DEVA/issues/20 (thanks @21pl).
 
 **Prerequisite:**
-- Python 3.7+
+- Python 3.9+
 - PyTorch 1.12+ and corresponding torchvision
 
 **Clone our repository:**
