@@ -32,6 +32,7 @@ We put datasets out-of-source, as in XMem. You do not need BL30K. The directory 
 ```
 
 You can try our script `python -m scripts.download_dataset` which might not work 100% of the time due to Google Drive's blocking. If it fails, please download the datasets manually. The links can be found in the script.
+
 To generate OVIS-VOS-train, use something like https://github.com/youtubevos/vis2vos or download our preprocessed version from https://drive.google.com/uc?id=1AZPyyqVqOl6j8THgZ1UdNJY9R1VGEFrX.
 
 ## Training Command
