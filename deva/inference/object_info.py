@@ -34,7 +34,7 @@ class ObjectInfo:
         if len(category_ids) == 0:
             return None
         else:
-            return int(stats.mode(self.category_ids, keepdims=False)[0])
+            return int(stats.mode(category_ids, keepdims=False)[0])
 
     def vote_score(self) -> Optional[float]:
         scores = [c for c in self.scores if c is not None]
