@@ -140,9 +140,12 @@ class DEVAInferenceCore:
                               segments_info: List[ObjectInfo],
                               *,
                               image_ti_override: bool = None,
-                              forward_mask: torch.Tensor = None) -> torch.Tensor:
+                              forward_mask: torch.Tensor = None, 
+                              incremental: bool = False) -> torch.Tensor:
         # this is used for merging detections from an image-based model
         # it is not used for VOS inference
+        # incremental: if True, existing objects do not need to be validated by the detected mask, 
+        # i.e., objects are only discard if they are out of view for max_missed_detection_count times
         self.curr_ti += 1
 
         if image_ti_override is not None:
@@ -172,7 +175,7 @@ class DEVAInferenceCore:
                                       self.object_manager,
                                       segments_info,
                                       max_num_objects=self.max_num_objects,
-                                      incremental_mode=(forward_mask is not None))
+                                      incremental_mode=incremental)
 
         # find inactive objects that we need to delete
         purge_activated, tmp_keep_idx, obj_keep_idx = self.object_manager.purge_inactive_objects(

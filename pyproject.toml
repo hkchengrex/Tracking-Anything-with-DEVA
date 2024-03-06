@@ -5,6 +5,11 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[tool.yapf]
+based_on_style = "pep8"
+indent_width = 4
+column_limit = 100
+
 [project]
 name = "deva"
 version = "1.0.0"
@@ -33,6 +38,9 @@ dependencies = [
   'gradio >= 3.44',
   'gdown >= 4.7.1',
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["deva"]
 
 [project.urls]
 "Homepage" = "https://github.com/hkchengrex/Tracking-Anything-with-DEVA"
