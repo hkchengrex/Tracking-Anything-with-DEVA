@@ -14,6 +14,8 @@ ICCV 2023
 1. Provide long-term, open-vocabulary video segmentation with text-prompts out-of-the-box.
 2. Fairly easy to **integrate your own image model**! Wouldn't you or your reviewers be interested in seeing examples where your image model also works well on videos :smirk:? No finetuning is needed!
 
+***Note (Mar 6 2024):*** We have fixed a major bug (introduced in the last update) that prevented the deletion of unmatched segments in text/eval_with_detections modes. This should greatly reduce the amount of accumulated noisy detection/false positives, especially for long videos. See #64.
+
 ***Note (Sep 12 2023):*** We have improved automatic video segmentation by not querying the points in segmented regions. We correspondingly increased the number of query points per side to 64 and deprecated the "engulf" mode. The old code can be found in the "legacy_engulf" branch. The new code should run a lot faster and capture smaller objects. The text-prompted mode is still recommended for better results.
 
 ***Note (Sep 11 2023):*** We have removed the "pluralize" option as it works weirdly sometimes with GroundingDINO. If needed, please pluralize the prompt yourself.
