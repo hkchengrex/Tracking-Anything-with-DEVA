@@ -26,12 +26,19 @@ class ResultSaver:
                  *,
                  dataset: str,
                  object_manager: ObjectManager,
-                 palette: Optional[ImagePalette.ImagePalette] = None):
+                 palette: Optional[ImagePalette.ImagePalette] = None,
+                 mask_alpha: float = 0.5,
+                 annotate_boxes: bool = True,
+                 annotate_labels: bool = True,):
         self.output_root = output_root
         self.video_name = video_name
         self.dataset = dataset.lower()
         self.palette = palette
         self.object_manager = object_manager
+
+        self.mask_alpha = mask_alpha
+        self.annotate_boxes = annotate_boxes
+        self.annotate_labels = annotate_labels
 
         self.need_remapping = False
         self.json_style = None
@@ -237,7 +244,7 @@ def save_result(queue: Queue):
                         image_np = np.array(Image.open(path_to_image))
                     else:
                         raise ValueError('Cannot visualize without image_np or path_to_image')
-                alpha = (out_mask == 0).astype(np.float32) * 0.5 + 0.5
+                alpha = (out_mask == 0).astype(np.float32) * saver.mask_alpha + (1 - saver.mask_alpha)
                 alpha = alpha[:, :, None]
                 blend = (image_np * alpha + rgb_mask * (1 - alpha)).astype(np.uint8)
 
@@ -260,13 +267,25 @@ def save_result(queue: Queue):
                         detections = sv.Detections(xyxy,
                                                    confidence=np.array(all_scores),
                                                    class_id=np.array(all_cat_ids))
-                        box_annotator = sv.BoundingBoxAnnotator()
-                        label_annotator = sv.LabelAnnotator()
-                        blend = box_annotator.annotate(scene=blend,
-                                                   detections=detections)
-                        blend = label_annotator.annotate(scene=blend,
+                        
+                        if saver.annotate_boxes:
+                            box_annotator = sv.BoundingBoxAnnotator()
+                            blend = box_annotator.annotate(scene=blend,
+                                                    detections=detections)
+                            
+                            if saver.annotate_labels:
+                                label_annotator = sv.LabelAnnotator()
+                                blend = label_annotator.annotate(scene=blend,
                                                         detections=detections,
                                                         labels=labels)
+
+                        # box_annotator = sv.BoundingBoxAnnotator()
+                        # label_annotator = sv.LabelAnnotator()
+                        # blend = box_annotator.annotate(scene=blend,
+                        #                            detections=detections)
+                        # blend = label_annotator.annotate(scene=blend,
+                        #                                 detections=detections,
+                        #                                 labels=labels)
 
                 if saver.dataset != 'gradio':
                     # find a place to save the visualization
