@@ -260,10 +260,13 @@ def save_result(queue: Queue):
                         detections = sv.Detections(xyxy,
                                                    confidence=np.array(all_scores),
                                                    class_id=np.array(all_cat_ids))
-                        annotator = sv.BoxAnnotator()
-                        blend = annotator.annotate(scene=blend,
-                                                   detections=detections,
-                                                   labels=labels)
+                        box_annotator = sv.BoundingBoxAnnotator()
+                        label_annotator = sv.LabelAnnotator()
+                        blend = box_annotator.annotate(scene=blend,
+                                                   detections=detections)
+                        blend = label_annotator.annotate(scene=blend,
+                                                        detections=detections,
+                                                        labels=labels)
 
                 if saver.dataset != 'gradio':
                     # find a place to save the visualization
