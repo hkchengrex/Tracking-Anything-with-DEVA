@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 import numpy as np
 from PIL import Image
 from functools import partial
-from progressbar import progressbar
+from tqdm import tqdm
 
 from deva.utils.vipseg_categories import VIPSEG_CATEGORIES
 from deva.utils.pano_utils import IDPostprocessor, id_to_rgb
@@ -94,7 +94,7 @@ def merge_stuff(input_path, output_path):
 
     output_annotations = []
     pool = Pool(16)
-    for out_vid_ann in progressbar(pool.imap(
+    for out_vid_ann in tqdm(pool.imap(
             partial(process_single_video, input_path=input_path, output_path=output_path),
             annotations),
                                    max_value=len(annotations)):
