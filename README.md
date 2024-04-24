@@ -115,7 +115,7 @@ The following two scripts segment the example clip using either Grounded Segment
 **Script (text-prompted):**
 ```bash
 python demo/demo_with_text.py --chunk_size 4 \
---img_path ./example/vipseg/images/12_1mWNahzcsAc \ 
+--img_path ./example/vipseg/images/12_1mWNahzcsAc \
 --amp --temporal_setting semionline \
 --size 480 \
 --output ./example/output --prompt person.hat.horse
@@ -124,7 +124,7 @@ python demo/demo_with_text.py --chunk_size 4 \
 **Script (automatic):**
 ```bash
 python demo/demo_automatic.py --chunk_size 4 \
---img_path ./example/vipseg/images/12_1mWNahzcsAc \ 
+--img_path ./example/vipseg/images/12_1mWNahzcsAc \
 --amp --temporal_setting semionline \
 --size 480 \
 --output ./example/output
