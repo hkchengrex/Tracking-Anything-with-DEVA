@@ -53,6 +53,8 @@ To get quantitative results:
 Download VIPSeg from https://github.com/VIPSeg-Dataset/VIPSeg-Dataset and 
 convert the data into 720p using their scripts.
 
+***Note: some VIPSeg detections are missing due to a pre-processing error. See https://github.com/hkchengrex/Tracking-Anything-with-DEVA/issues/88.***
+
 Then,
 ```bash
 python evaluation/eval_with_detections.py \
