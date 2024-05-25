@@ -13,8 +13,9 @@ try:
 except ImportError:
     # not sure why this happens sometimes
     from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
-from segment_anything import sam_model_registry, SamPredictor
+from segment_anything import sam_model_registry, SamPredictor, sam_hq_model_registry
 from deva.ext.MobileSAM.setup_mobile_sam import setup_model as setup_mobile_sam
+from deva.ext.LightHQSAM.setup_light_hqsam import setup_model as setup_light_hqsam
 import numpy as np
 import torch
 
@@ -47,6 +48,22 @@ def get_grounding_dino_model(config: Dict, device: str) -> (GroundingDINOModel, 
         sam = sam_model_registry[SAM_ENCODER_VERSION](checkpoint=SAM_CHECKPOINT_PATH).to(
             device=device)
         sam = SamPredictor(sam)
+    elif variant == 'sam_hq':
+        # Building HQ-SAM model with better Mask quality
+        SAM_ENCODER_VERSION = config['SAM_ENCODER_VERSION']
+        HQ_SAM_CHECKPOINT_PATH = config['HQ_SAM_CHECKPOINT_PATH']
+        sam_hq = sam_hq_model_registry[SAM_ENCODER_VERSION](checkpoint=HQ_SAM_CHECKPOINT_PATH).to(
+            device=device)
+        sam = SamPredictor(sam_hq)
+    elif variant == 'sam_hq_light':
+        LIGHT_HQ_SAM_CHECKPOINT_PATH = config['LIGHT_HQ_SAM_CHECKPOINT_PATH']
+
+        # Building Light HQ-SAM model with good Mask quality and efficiency
+        checkpoint = torch.load(LIGHT_HQ_SAM_CHECKPOINT_PATH)
+        light_hq_sam = setup_light_hqsam()
+        light_hq_sam.load_state_dict(checkpoint, strict=True)
+        light_hq_sam.to(device=device)
+        sam = SamPredictor(light_hq_sam)
 
     return gd_model, sam
 
@@ -74,7 +91,6 @@ def segment_with_text(config: Dict, gd_model: GroundingDINOModel, sam: SamPredic
                                                classes=prompts,
                                                box_threshold=BOX_THRESHOLD,
                                                text_threshold=TEXT_THRESHOLD)
-
     nms_idx = torchvision.ops.nms(torch.from_numpy(detections.xyxy),
                                   torch.from_numpy(detections.confidence),
                                   NMS_THRESHOLD).numpy().tolist()
