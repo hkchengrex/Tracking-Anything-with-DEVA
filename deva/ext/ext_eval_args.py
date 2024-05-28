@@ -17,6 +17,12 @@ def add_ext_eval_args(parser: ArgumentParser):
     # Segment Anything (SAM) models
     parser.add_argument('--SAM_ENCODER_VERSION', default='vit_h')
     parser.add_argument('--SAM_CHECKPOINT_PATH', default='./saves/sam_vit_h_4b8939.pth')
+    
+    # HQ-SAM
+    parser.add_argument('--HQ_SAM_CHECKPOINT_PATH', default='./saves/sam_hq_vit_h.pth')
+    
+    # Light HQ-SAM
+    parser.add_argument('--LIGHT_HQ_SAM_CHECKPOINT_PATH', default='./saves/sam_hq_vit_tiny.pth')
 
     # Mobile SAM
     parser.add_argument('--MOBILE_SAM_CHECKPOINT_PATH', default='./saves/mobile_sam.pt')
