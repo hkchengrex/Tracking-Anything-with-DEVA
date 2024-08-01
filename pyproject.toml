@@ -37,7 +37,6 @@ dependencies = [
   'PuLP >= 2.7',
   'gradio >= 3.44',
   'gdown >= 4.7.1',
-  'markupsafe==2.0.1',
 ]
 
 [tool.hatch.build.targets.wheel]
