@@ -13,9 +13,16 @@ try:
 except ImportError:
     # not sure why this happens sometimes
     from GroundingDINO.groundingdino.util.inference import Model as GroundingDINOModel
-from segment_anything import sam_model_registry, SamPredictor, sam_hq_model_registry
+from segment_anything import sam_model_registry, SamPredictor
+try:
+    from segment_anything import sam_hq_model_registry
+except ImportError:
+    print("HQ-SAM not found, please install it from https://github.com/SysCV/sam-hq")
 from deva.ext.MobileSAM.setup_mobile_sam import setup_model as setup_mobile_sam
-from deva.ext.LightHQSAM.setup_light_hqsam import setup_model as setup_light_hqsam
+try:
+    from deva.ext.LightHQSAM.setup_light_hqsam import setup_model as setup_light_hqsam
+except ImportError:
+    print("Light HQ-SAM not found, please install it from https://github.com/SysCV/sam-hq")
 import numpy as np
 import torch
 
