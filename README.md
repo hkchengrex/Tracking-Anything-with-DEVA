@@ -77,26 +77,39 @@ git clone https://github.com/hkchengrex/Tracking-Anything-with-DEVA.git
 cd Tracking-Anything-with-DEVA
 pip install -e .
 ```
-(If you encounter the `File "setup.py" not found` error, upgrade your pip with `pip install --upgrade pip`)
 
 **Download the pretrained models:**
 ```bash
 bash scripts/download_models.sh
 ```
 
-**Required for the text-prompted/automatic demo:**
-
-Install [our fork of Grounded-Segment-Anything](https://github.com/hkchengrex/Grounded-Segment-Anything). Follow its instructions.
-
-Grounding DINO installation might fail silently.
-Try `python -c "from groundingdino.util.inference import Model as GroundingDINOModel"`.
-If you get a warning about running on CPU mode only, make sure you have `CUDA_HOME` set during Grounding DINO installation.
+**Install GroundingDINO and Segment Anything Model**
+```bash 
+git clone https://github.com/hkchengrex/Grounded-Segment-Anything
+env CUDA_HOME=/usr/local/cuda
+env BUILD_WITH_CUDA=True
+env AM_I_DOCKER=False
+cd {HOME}/Grounded-Segment-Anything
+pip uninstall -y GroundingDINO
+pip install -e GroundingDINO
+pip install -q -e segment_anything
+```
 
 **(Optional) For fast integer program solving in the semi-online setting:** 
 
 Get your [gurobi](https://www.gurobi.com/) licence which is free for academic use. 
 If a license is not found, we fall back to using [PuLP](https://github.com/coin-or/pulp) which is slower and is not rigorously tested by us. All experiments are conducted with gurobi.
 
+**(Optional) For text-prompted/automatic demo:**
+
+Install [our fork of Grounded-Segment-Anything](https://github.com/hkchengrex/Grounded-Segment-Anything). Follow its instructions.
+
+Grounding DINO installation might fail silently.
+Try 
+```bash
+python -c "from groundingdino.util.inference import Model as GroundingDINOModel"
+```
+If you get a warning about running on CPU mode only, make sure you have `CUDA_HOME` set during Grounding DINO installation.
 
 ## Quick Start
 
